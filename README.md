@@ -1,0 +1,4 @@
+RNDUtil
+=======
+
+utility class methods
