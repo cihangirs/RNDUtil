@@ -1080,6 +1080,91 @@ int * split(const char * word){
     
 
 }
+
+
++ (NSArray *)collectAddressBookContacts {
+    
+    NSMutableArray *allContacts = nil;
+    
+    CFErrorRef error = nil;
+    ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &error);
+    if(error) {
+        if(CFErrorGetCode(error) == kABOperationNotPermittedByUserError) {
+            CFRelease(error);
+            return nil;
+        }
+    }
+    
+    allContacts = [[NSMutableArray alloc] init];
+    
+    CFArrayRef people  = ABAddressBookCopyArrayOfAllPeople(addressBook);
+    for(int i = 0;i<ABAddressBookGetPersonCount(addressBook);i++)
+    {
+        NSMutableDictionary *aPersonDict = [[NSMutableDictionary alloc] init];
+        
+        /*
+         const ABPropertyID kABPersonFirstNameProperty;
+         const ABPropertyID kABPersonLastNameProperty;
+         const ABPropertyID kABPersonMiddleNameProperty;
+         const ABPropertyID kABPersonPrefixProperty;
+         const ABPropertyID kABPersonSuffixProperty;
+         const ABPropertyID kABPersonNicknameProperty;
+         const ABPropertyID kABPersonFirstNamePhoneticProperty;
+         const ABPropertyID kABPersonLastNamePhoneticProperty;
+         const ABPropertyID kABPersonMiddleNamePhoneticProperty;
+         const ABPropertyID kABPersonOrganizationProperty;
+         const ABPropertyID kABPersonJobTitleProperty;
+         const ABPropertyID kABPersonDepartmentProperty;
+         const ABPropertyID kABPersonEmailProperty;
+         const ABPropertyID kABPersonBirthdayProperty;
+         const ABPropertyID kABPersonNoteProperty;
+         const ABPropertyID kABPersonCreationDateProperty;
+         const ABPropertyID kABPersonModificationDateProperty;
+         
+         */
+        ABRecordRef ref = CFArrayGetValueAtIndex(people, i);
+        NSString *fullName = (__bridge NSString *) ABRecordCopyCompositeName(ref);
+        
+        
+        NSString *firstName = (__bridge NSString*) ABRecordCopyValue(ref, kABPersonFirstNameProperty);
+        NSString *lastName = (__bridge NSString*) ABRecordCopyValue(ref, kABPersonLastNameProperty);
+        
+        if (fullName) {
+            [aPersonDict setObject:fullName forKey:@"fullName"];
+            
+            [aPersonDict setObject:firstName forKey:@"firstName"];
+            [aPersonDict setObject:lastName forKey:@"lastName"];
+            // collect phone numbers
+            NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
+            ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
+            for(CFIndex j = 0; j < ABMultiValueGetCount(phones); j++) {
+                NSString *phoneNumber = (__bridge NSString *) ABMultiValueCopyValueAtIndex(phones, j);
+                [phoneNumbers addObject:phoneNumber];
+            }
+            [aPersonDict setObject:phoneNumbers forKey:@"phoneNumbers"];
+            
+            // collect emails - key "emails" will contain an array of email addresses
+            ABMultiValueRef emails = ABRecordCopyValue(ref, kABPersonEmailProperty);
+            NSMutableArray *emailAddresses = [[NSMutableArray alloc] init];
+            for(CFIndex idx = 0; idx < ABMultiValueGetCount(emails); idx++) {
+                NSString *email = (__bridge NSString *)ABMultiValueCopyValueAtIndex(emails, idx);
+                [emailAddresses addObject:email];
+            }
+            [aPersonDict setObject:emailAddresses forKey:@"emails"];
+            // if you want to collect any other info that's stored in the address book, it follows the same pattern.
+            // you just need the right kABPerson.... property.
+            
+            [allContacts addObject:aPersonDict];
+        } else {
+            // Note: I have a few entries in my phone that don't have a name set
+            // Example one could have just an email address in their address book.
+        }
+    }
+    return allContacts;
+}
+
+
+
 /**
  *  Calls number, eh?
  */

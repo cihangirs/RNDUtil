@@ -81,6 +81,7 @@
            withDate:(NSDate*)date
          complation:(void(^)(BOOL succeed))complation;
 
++ (NSArray *)collectAddressBookContacts;
 + (void)callNumber:(NSString*)strNumber;
 
 + (float)getSystemVolumeLevel;
