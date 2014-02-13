@@ -1132,8 +1132,13 @@ int * split(const char * word){
         if (fullName) {
             [aPersonDict setObject:fullName forKey:@"fullName"];
             
-            [aPersonDict setObject:firstName forKey:@"firstName"];
-            [aPersonDict setObject:lastName forKey:@"lastName"];
+            if(firstName) {
+                [aPersonDict setObject:firstName forKey:@"firstName"];
+            }
+            
+            if(lastName) {
+                [aPersonDict setObject:lastName forKey:@"lastName"];
+            }
             // collect phone numbers
             NSMutableArray *phoneNumbers = [[NSMutableArray alloc] init];
             ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
