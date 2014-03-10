@@ -1318,4 +1318,42 @@ static const char *getPropertyType(objc_property_t property) {
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
+
+//https://coderwall.com/p/q4q78q
++ (NSString *)splitOnCapital:(NSString*)str
+{
+    // Make a index of uppercase characters
+    NSRange upcaseRange = NSMakeRange('A', 26);
+    NSIndexSet *upcaseSet = [NSIndexSet     indexSetWithIndexesInRange:upcaseRange];
+    
+    // Split our camecase word
+    NSMutableString *result = [NSMutableString string];
+    NSMutableString *oneWord = [NSMutableString string];
+    for (int i = 0; i < str.length; i++) {
+        char oneChar = [str characterAtIndex:i];
+        if ([upcaseSet containsIndex:oneChar]) {
+            // Found a uppercase char, now save previous word
+            if (result.length == 0) {
+                // First word, no space in beginning
+                [result appendFormat:@"%@", [oneWord capitalizedString]];
+            }else {
+                [result appendFormat:@" %@", oneWord];
+            }
+            
+            // Clear previous word for new word
+            oneWord = [NSMutableString string];
+        }
+        
+        [oneWord appendFormat:@"%c", oneChar];
+    }
+    
+    // Add last word
+    if (oneWord.length > 0) {
+        [result appendFormat:@" %@", oneWord];
+    }
+    
+    return result;
+}
+
+
 @end

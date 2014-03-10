@@ -88,5 +88,6 @@
 + (BOOL)getDiskspace:(uint64_t*)diskSpace freeSpace:(uint64_t*)freeSpace;
 
 + (BOOL)clearPath:(NSString*)clearPath;
++ (NSString *)splitOnCapital:(NSString*)str;
 
 @end
