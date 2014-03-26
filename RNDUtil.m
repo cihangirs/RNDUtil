@@ -905,39 +905,42 @@ int * split(const char * word){
     float brightness;
     float alpha;
     
-    [color getHue:&hue saturation:&satur brightness:&brightness alpha:&alpha];
+    if([color getHue:&hue saturation:&satur brightness:&brightness alpha:&alpha]) {
     
-    
-    if(brightness > 0.8) {
-        if(satur > 0.8) {
-            hue *= 1.5;
-            if(hue > 1) {
-                hue = 1;
+        if(brightness > 0.8) {
+            if(satur > 0.8) {
+                hue *= 1.5;
+                if(hue > 1) {
+                    hue = 1;
+                }
+                
             }
-            
-        }
-        if(satur == 0) {
-            satur = 0.05f;
-            
+            if(satur == 0) {
+                satur = 0.05f;
+                
+            }
+            else {
+                satur *= 1.5;
+                if(satur > 1) {
+                    satur = 1;
+                }
+            }
         }
         else {
-            satur *= 1.5;
-            if(satur > 1) {
-                satur = 1;
+            brightness *= 1.5;
+            if(brightness > 1) {
+                brightness = 1;
             }
         }
+        
+        alpha = 0.7f;
+        UIColor *newColor = [UIColor colorWithHue:hue saturation:satur brightness:brightness alpha:alpha];
+        
+        return newColor;
     }
     else {
-        brightness *= 1.5;
-        if(brightness > 1) {
-            brightness = 1;
-        }
+        return color;
     }
-    
-    alpha = 0.7f;
-    UIColor *newColor = [UIColor colorWithHue:hue saturation:satur brightness:brightness alpha:alpha];
-    
-    return newColor;
     
 }
 
