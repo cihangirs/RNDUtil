@@ -646,17 +646,13 @@ int * split(const char * word){
  */
 + (NSString*)trimString:(NSString*)string wihtFont:(UIFont*)font fromSize:(CGSize)size toWidth:(CGFloat)maxWidth {
     //...
-    float width = [string sizeWithFont:font
-                     constrainedToSize:size
-                         lineBreakMode:NSLineBreakByWordWrapping].width;
+    float width = [string boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size.width;
     
     if(width > maxWidth) {
         while(width > maxWidth) {
             string = [string substringToIndex:[string length]-1];
             
-            width = [string sizeWithFont:font
-                       constrainedToSize:size
-                           lineBreakMode:NSLineBreakByWordWrapping].width;
+            width = [string boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size.width;
         }
         
         string = [NSString stringWithFormat:@"%@...",[string substringToIndex:[string length]-3]];
@@ -798,7 +794,8 @@ int * split(const char * word){
  */
 + (int)lineCountForFont:(UIFont *)font withText:(NSString*)text withWidth:(CGFloat)widht {
     CGSize constrain = CGSizeMake(widht, INT_MAX);
-    CGSize size = [text sizeWithFont:font constrainedToSize:constrain lineBreakMode:NSLineBreakByWordWrapping];
+    
+    CGSize size = [text boundingRectWithSize:constrain options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil].size;
     
     return ceil(size.height / font.lineHeight);
 }
