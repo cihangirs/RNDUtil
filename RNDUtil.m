@@ -13,6 +13,9 @@
 #import <EventKit/EventKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <AddressBook/AddressBook.h>
+#import <CoreLocation/CoreLocation.h>
+
 
 #ifndef STR_EMPTY
 #define STR_EMPTY   @""
@@ -1353,6 +1356,53 @@ static const char *getPropertyType(objc_property_t property) {
     }
     
     return result;
+}
+
+
++ (void)getAddress:(CLLocationCoordinate2D)coordinate withComplation:(void(^)(BOOL success,
+                                                                              NSError *error,
+                                                                              NSString *title,
+                                                                              NSString *subtitle,
+                                                                              NSDictionary *addressDictionary))complation {
+    
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    CLLocation *newLocation = [[CLLocation alloc]initWithLatitude:coordinate.latitude
+                                                        longitude:coordinate.longitude];
+    
+    [geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if ((error == nil) && placemarks && placemarks.count > 0)
+        {
+            CLPlacemark *placemark = placemarks[0];
+            
+            NSDictionary *addressDictionary = placemark.addressDictionary;
+            
+            NSString *title = [addressDictionary
+                               objectForKey:(NSString *)kABPersonAddressStreetKey];
+            
+            NSString *city = [addressDictionary
+                              objectForKey:(NSString *)kABPersonAddressCityKey];
+            NSString *state = [addressDictionary
+                               objectForKey:(NSString *)kABPersonAddressStateKey];
+            NSString *zip = [addressDictionary
+                             objectForKey:(NSString *)kABPersonAddressZIPKey];
+            
+            NSString *subtitle = [NSString stringWithFormat:@"%@ %@ - %@", zip, city, state];
+            
+            if(complation) {
+                complation(YES,error,title,subtitle,addressDictionary);
+            }
+            
+        }
+        else {
+            if(complation) {
+                complation(NO,error,nil,nil,nil);
+            }
+        }
+        
+        
+    }];
+    
 }
 
 

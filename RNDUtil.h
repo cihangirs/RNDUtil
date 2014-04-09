@@ -3,6 +3,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CLLocation.h>
 
 @interface RNDUtil : NSObject
 
@@ -89,5 +90,11 @@
 
 + (BOOL)clearPath:(NSString*)clearPath;
 + (NSString *)splitOnCapital:(NSString*)str;
+
++ (void)getAddress:(CLLocationCoordinate2D)coordinate withComplation:(void(^)(BOOL success,
+                                                                              NSError *error,
+                                                                              NSString *title,
+                                                                              NSString *subtitle,
+                                                                              NSDictionary *addressDictionary))complation;
 
 @end
