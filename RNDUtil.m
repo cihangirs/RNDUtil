@@ -1,6 +1,5 @@
 //
 //  Created by Vladimir Nabokov on 12/12/13.
-//  Copyright (c) 2013 Anil Can Baykal. All rights reserved.
 //
 
 #import "RNDUtil.h"
