@@ -530,7 +530,8 @@ int * split(const char * word){
  */
 + (BOOL)isNumberic:(NSString*)str {
     
-    NSCharacterSet *nums = [NSCharacterSet decimalDigitCharacterSet];
+    NSCharacterSet *nums = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    
     NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:str];
     BOOL valid = [nums isSupersetOfSet:inStringSet];
     
@@ -547,7 +548,7 @@ int * split(const char * word){
     if(str == nil) {return NO;}
     if([str isEqualToString:STR_EMPTY]) {return NO;}
     
-    NSCharacterSet *alphas = [NSCharacterSet letterCharacterSet];
+    NSCharacterSet *alphas = [NSCharacterSet characterSetWithCharactersInString:@"ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZabcçdefgğhıijklmnoöpqrsştuüvwxyz"];
     NSCharacterSet *space = [NSCharacterSet whitespaceCharacterSet];
     NSMutableCharacterSet *superSet = [[NSMutableCharacterSet alloc]init];
     
